@@ -4,7 +4,11 @@ import com.company.recruitment.dto.LoginRequest;
 import com.company.recruitment.dto.RegisterRequest;
 import com.company.recruitment.model.User;
 import com.company.recruitment.service.AuthService;
+import com.company.recruitment.service.UsernameAlreadyExistsException;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,17 +24,22 @@ public class AuthController {
     }
 
     @PostMapping("/api/auth/login")
-    public String login(@RequestBody LoginRequest request) {
+    public ResponseEntity<String> login(@RequestBody LoginRequest request) {
         String token = authService.authenticate(request.getUsername(), request.getPassword());
         if (token != null) {
-            return token;
+            return ResponseEntity.ok(token);
         } else {
-            throw new RuntimeException("Invalid credentials");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
     }
 
-    @PostMapping("/api/auth/register")
-    public User register(@RequestBody RegisterRequest request) {
-        return authService.register(request.getUsername(), request.getPassword());
+   @PostMapping("/api/auth/register")
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+        try {
+            User newUser = authService.register(request.getUsername(), request.getPassword());
+            return ResponseEntity.ok(newUser);
+        } catch (UsernameAlreadyExistsException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username already exists. Please choose another username.");
+        }
     }
 }
