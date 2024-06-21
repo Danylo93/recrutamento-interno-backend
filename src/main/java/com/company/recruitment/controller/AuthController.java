@@ -24,10 +24,10 @@ public class AuthController {
     }
 
     @PostMapping("/api/auth/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         String token = authService.authenticate(request.getUsername(), request.getPassword());
         if (token != null) {
-            return ResponseEntity.ok(token);
+            return ResponseEntity.ok().body("{\"token\": \"" + token + "\"}");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
