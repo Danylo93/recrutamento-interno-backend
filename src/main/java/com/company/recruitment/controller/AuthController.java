@@ -36,7 +36,7 @@ public class AuthController {
    @PostMapping("/api/auth/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         try {
-            User newUser = authService.register(request.getUsername(), request.getPassword());
+            User newUser = authService.register(request.getUsername(), request.getPassword(), request.getRole());
             return ResponseEntity.ok(newUser);
         } catch (UsernameAlreadyExistsException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username already exists. Please choose another username.");

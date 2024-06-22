@@ -4,17 +4,29 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import com.company.recruitment.service.AuthServiceImpl;
+
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Component
 public class JwtTokenUtil implements Serializable {
 
     private static final long serialVersionUID = -2550185165626007488L;
+    private static final Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
+
 
     @Value("${jwt.secret}")
     private String secret;
@@ -47,19 +59,29 @@ public class JwtTokenUtil implements Serializable {
         return expiration.before(new Date());
     }
 
-    // Gera um token para o usuário
+    // Gera um token para o usuário com suas roles
     public String generateToken(UserDetails userDetails) {
-        return doGenerateToken(userDetails.getUsername());
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("role", userDetails.getAuthorities().stream()
+            .map(GrantedAuthority::getAuthority)
+            .collect(Collectors.toList()));
+    
+        String username = userDetails.getUsername();
+        logger.info("Generating token for username: {}", username);
+        logger.info("User roles: {}", claims.get("role")); // Adicione esta linha para verificar as roles
+    
+        return doGenerateToken(claims, username);
     }
 
-    private String doGenerateToken(String subject) {
-        return Jwts.builder()
-                .setSubject(subject)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
-                .signWith(SignatureAlgorithm.HS512, secret)
-                .compact();
-    }
+private String doGenerateToken(Map<String, Object> claims, String subject) {
+    return Jwts.builder()
+        .setClaims(claims)
+        .setSubject(subject)
+        .setIssuedAt(new Date(System.currentTimeMillis()))
+        .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
+        .signWith(SignatureAlgorithm.HS512, secret)
+        .compact();
+}
 
     // Valida o token
     public Boolean validateToken(String token, UserDetails userDetails) {

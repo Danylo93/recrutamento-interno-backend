@@ -62,5 +62,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.logout()
                 .logoutSuccessUrl("/"); // Configurar URL de logout (opcional)
+        
     }
 }
