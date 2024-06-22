@@ -24,7 +24,7 @@ public class JobController {
     }
 
     @PostMapping
-    public Job createJob(@RequestBody Job job) {
+    public Job addJob(@RequestBody Job job) {
         return jobService.createJob(job);
     }
 

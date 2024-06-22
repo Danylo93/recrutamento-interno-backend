@@ -45,23 +45,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/api/auth/**").permitAll() // Permitir acesso sem autenticação para endpoints de autenticação
-                .antMatchers("/api/jobs/**").hasRole("ADMIN") // Requer papel ADMIN para acessar endpoints /api/jobs/**
-                .antMatchers("/api/applications/**").hasRole("USER") // Requer papel USER para acessar endpoints /api/applications/**
-                .anyRequest().authenticated() // Todas as outras requisições precisam de autenticação
-                .and()
-                .exceptionHandling().accessDeniedPage("/403") // Página de acesso negado (opcional)
-                .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+protected void configure(HttpSecurity http) throws Exception {
+    http.csrf().disable()
+            .authorizeRequests()
+            .antMatchers("/api/auth/**").permitAll() // Permitir acesso sem autenticação para endpoints de autenticação
+            .antMatchers("/api/jobs/**").hasRole("ADMIN") // Requer papel ADMIN para acessar endpoints /api/jobs/**
+            .antMatchers("/api/applications/**").hasRole("USER") // Requer papel USER para acessar endpoints /api/applications/**
+            .anyRequest().authenticated() // Todas as outras requisições precisam de autenticação
+            .and()
+            .exceptionHandling().accessDeniedPage("/403") // Página de acesso negado (opcional)
+            .and()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        // Adiciona o filtro JWT
-        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+    // Adiciona o filtro JWT
+    http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
-        http.logout()
-                .logoutSuccessUrl("/"); // Configurar URL de logout (opcional)
-        
-    }
+    http.logout()
+            .logoutSuccessUrl("/"); // Configurar URL de logout (opcional)
+}
+
 }
