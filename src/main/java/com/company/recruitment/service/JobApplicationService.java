@@ -8,17 +8,16 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class CandidateServiceImpl implements CandidateService {
+public class JobApplicationService {
 
     private final JobApplicationRepository jobApplicationRepository;
 
     @Autowired
-    public CandidateServiceImpl(JobApplicationRepository jobApplicationRepository) {
+    public JobApplicationService(JobApplicationRepository jobApplicationRepository) {
         this.jobApplicationRepository = jobApplicationRepository;
     }
 
-    @Override
-    public List<JobApplication> getApplicationsByCandidate(Long candidateId) {
+    public List<JobApplication> getApplicationsByCandidateId(Long candidateId) {
         return jobApplicationRepository.findByCandidateId(candidateId);
     }
 }

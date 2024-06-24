@@ -4,10 +4,12 @@ import com.company.recruitment.model.Job;
 import com.company.recruitment.model.JobApplication;
 import com.company.recruitment.service.JobService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/jobs")
@@ -55,10 +57,18 @@ public class JobController {
     }
 
     @PostMapping("/{jobId}/apply")
-    public ResponseEntity<JobApplication> applyForJob(@PathVariable Long jobId, @RequestParam Long candidateId, @RequestBody JobApplication application) {
-    JobApplication savedApplication = jobService.applyForJob(jobId, candidateId, application);
-    return ResponseEntity.ok(savedApplication);
-
+    public ResponseEntity<JobApplication> applyForJob(
+        @PathVariable Long jobId,
+        @RequestBody Map<String, String> request) {
+        
+        String candidateName = request.get("candidateName");
+        String candidateEmail = request.get("candidateEmail");
     
-}
+        JobApplication application = jobService.applyForJob(jobId, candidateName, candidateEmail);
+    
+        return ResponseEntity.status(HttpStatus.CREATED).body(application);
+    }
+
+
+
 }

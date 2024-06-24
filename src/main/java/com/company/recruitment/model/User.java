@@ -14,11 +14,24 @@ public class User {
     private String username;
     private String password;
 
+    @OneToOne(mappedBy = "user")
+    private Candidate candidate;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
+
+    public User() {
+    }
+
+    public User(Long id, String username, String password, Set<Role> roles) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.roles = roles;
+    }
 
     public Long getId() {
         return id;

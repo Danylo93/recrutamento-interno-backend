@@ -11,7 +11,9 @@ public class JobApplication {
     private Long id;
 
     private Long jobId;
-    private Long candidateId; // Adicione esta linha
+    private Long candidateId;
+    private String candidateName; // Novo atributo
+    private String candidateEmail;
     private String status;
     private String feedback;
 
@@ -32,6 +34,24 @@ public class JobApplication {
     public void setJobId(Long jobId) {
         this.jobId = jobId;
     }
+
+    public String getCandidateName() {
+        return candidateName;
+    }
+
+    public void setCandidateName(String candidateName) {
+        this.candidateName = candidateName;
+    }
+
+    public String getCandidateEmail() {
+        return candidateEmail;
+    }
+
+    public void setCandidateEmail(String candidateEmail) {
+        this.candidateEmail = candidateEmail;
+    }
+
+    
 
     public Long getCandidateId() {
         return candidateId;

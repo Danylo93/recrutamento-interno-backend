@@ -9,7 +9,7 @@ public interface JobService {
     List<Job> getAllJobs();
     Job createJob(Job job);
     Job updateJob(Long id, Job job);
-    JobApplication applyForJob(Long jobId, Long candidateId, JobApplication application);
-    void deleteJob(Long id);
     Job getJobById(Long id);
+    JobApplication applyForJob(Long jobId, String candidateName, String candidateEmail); // Adicionado este método
+    void deleteJob(Long id);
 }
