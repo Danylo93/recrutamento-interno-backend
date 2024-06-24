@@ -11,11 +11,12 @@ public class Job {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String title;
     private String description;
     private String requirements;
 
-    // Getters and setters
+    // Getters and setters (generated automatically or manually)
     public Long getId() {
         return id;
     }

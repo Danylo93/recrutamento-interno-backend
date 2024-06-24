@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import com.company.recruitment.service.AuthServiceImpl;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;

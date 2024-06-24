@@ -14,6 +14,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
@@ -45,23 +47,32 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-protected void configure(HttpSecurity http) throws Exception {
-    http.csrf().disable()
+    protected void configure(HttpSecurity http) throws Exception {
+        http.csrf().disable()
             .authorizeRequests()
-            .antMatchers("/api/auth/**").permitAll() // Permitir acesso sem autenticação para endpoints de autenticação
-            .antMatchers("/api/jobs/**").hasRole("ADMIN") // Requer papel ADMIN para acessar endpoints /api/jobs/**
-            .antMatchers("/api/applications/**").hasRole("USER") // Requer papel USER para acessar endpoints /api/applications/**
-            .anyRequest().authenticated() // Todas as outras requisições precisam de autenticação
+            .antMatchers("/api/auth/**").permitAll()
+            .anyRequest().authenticated()
             .and()
-            .exceptionHandling().accessDeniedPage("/403") // Página de acesso negado (opcional)
+            .exceptionHandling().accessDeniedPage("/403")
             .and()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .cors(); // Habilitar CORS
 
-    // Adiciona o filtro JWT
-    http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+        // Adiciona o filtro JWT
+        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+    }
 
-    http.logout()
-            .logoutSuccessUrl("/"); // Configurar URL de logout (opcional)
-}
-
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedOrigins("http://localhost:4200")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE")
+                        .allowedHeaders("*");
+            }
+        };
+    }
 }

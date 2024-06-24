@@ -1,5 +1,6 @@
 package com.company.recruitment.controller;
 
+import com.company.recruitment.model.User;
 import com.company.recruitment.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,5 +23,10 @@ public class UserController {
     @GetMapping("/roles")
     public List<String> getUserRoles() {
         return userService.getAllUserRoles();
+    }
+    
+    @GetMapping("/users/all")
+    public List<User> getAllUsers() {
+        return userService.getAllUsers();
     }
 }

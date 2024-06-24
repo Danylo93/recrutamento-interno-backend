@@ -1,8 +1,10 @@
 package com.company.recruitment.controller;
 
 import com.company.recruitment.model.Job;
+import com.company.recruitment.model.JobApplication;
 import com.company.recruitment.service.JobService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,22 +21,44 @@ public class JobController {
     }
 
     @GetMapping
-    public List<Job> getAllJobs() {
-        return jobService.getAllJobs();
+    public ResponseEntity<List<Job>> getAllJobs() {
+        List<Job> jobs = jobService.getAllJobs();
+        return ResponseEntity.ok(jobs);
     }
 
     @PostMapping
-    public Job addJob(@RequestBody Job job) {
-        return jobService.createJob(job);
+    public ResponseEntity<Job> createJob(@RequestBody Job job) {
+        Job createdJob = jobService.createJob(job);
+        return ResponseEntity.ok(createdJob);
     }
 
     @PutMapping("/{id}")
-    public Job updateJob(@PathVariable Long id, @RequestBody Job job) {
-        return jobService.updateJob(id, job);
+    public ResponseEntity<Job> updateJob(@PathVariable Long id, @RequestBody Job job) {
+        Job updatedJob = jobService.updateJob(id, job);
+        return ResponseEntity.ok(updatedJob);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteJob(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteJob(@PathVariable Long id) {
         jobService.deleteJob(id);
+        return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Job> getJobById(@PathVariable Long id) {
+        Job job = jobService.getJobById(id);
+        if (job != null) {
+            return ResponseEntity.ok(job);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("/{jobId}/apply")
+    public ResponseEntity<JobApplication> applyForJob(@PathVariable Long jobId, @RequestParam Long candidateId, @RequestBody JobApplication application) {
+    JobApplication savedApplication = jobService.applyForJob(jobId, candidateId, application);
+    return ResponseEntity.ok(savedApplication);
+
+    
+}
 }

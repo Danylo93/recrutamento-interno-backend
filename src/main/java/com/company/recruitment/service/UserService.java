@@ -1,6 +1,7 @@
 package com.company.recruitment.service;
 
 import com.company.recruitment.model.Role;
+import com.company.recruitment.model.User;
 import com.company.recruitment.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,5 +25,9 @@ public class UserService {
                 .map(Role::getName) // Mapear cada Role para seu nome
                 .distinct()
                 .collect(Collectors.toList());
+    }
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 }

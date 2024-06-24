@@ -1,6 +1,8 @@
 package com.company.recruitment.service;
 
 import com.company.recruitment.model.Job;
+import com.company.recruitment.model.JobApplication;
+import com.company.recruitment.repository.JobApplicationRepository;
 import com.company.recruitment.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,10 +14,13 @@ import java.util.Optional;
 public class JobServiceImpl implements JobService {
 
     private final JobRepository jobRepository;
+    private final JobApplicationRepository jobApplicationRepository;
+
 
     @Autowired
-    public JobServiceImpl(JobRepository jobRepository) {
+    public JobServiceImpl(JobRepository jobRepository, JobApplicationRepository jobApplicationRepository) {
         this.jobRepository = jobRepository;
+        this.jobApplicationRepository = jobApplicationRepository;
     }
 
     @Override
@@ -41,6 +46,20 @@ public class JobServiceImpl implements JobService {
             throw new RuntimeException("Job not found with id " + id);
         }
     }
+
+    @Override
+    public Job getJobById(Long id) {
+        Optional<Job> optionalJob = jobRepository.findById(id);
+        return optionalJob.orElse(null);
+    }
+
+    @Override
+    public JobApplication applyForJob(Long jobId, Long candidateId, JobApplication application) {
+    application.setJobId(jobId);
+    application.setCandidateId(candidateId);
+    application.setStatus("Pendente");
+    return jobApplicationRepository.save(application);
+}
 
     @Override
     public void deleteJob(Long id) {
